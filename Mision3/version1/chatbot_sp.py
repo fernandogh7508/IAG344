@@ -44,3 +44,15 @@ if __name__ == "__main__":
     ("gracias", "Gracias a ti por comunicarte con nosotros. ¡Que tengas un excelente día!")
 
     ]
+    #Entrenar el modelo con la lista
+    model,vectorizer,unique_answers=build_and_train_model(training_data)
+    #Mostrar un mensaje inicial al usuario
+    print("Chatbot supervisado listo,Escribe Salir para terminar.\n")
+    while True:
+        #Pedimos una frase al usuario
+        user =input("Tú: ").strip()
+        if user.lower() in {"salir","exit","quit"}:
+            print("Bot: !Hasta pronto¡")
+            break
+        response=predict_answer(model,vectorizer,unique_answers,user)
+        print("Bot: ",response)
