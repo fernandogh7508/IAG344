@@ -35,36 +35,38 @@ def build_and_train_model(train_pairs):
     #Guardar los objetos entrenados
     with open(MODEL_DIR,"wb") as f:
         pickle.dump(model,f)
+    with open(MODEL_DIR,"wb") as f:
+        pickle.dump(vectorizer, f)
+    with open(MODEL_DIR,"wb")as f:
+        pickle.dump(unique_answers,f)
+    print("🆗 Modelo entrebado y guardado correctamente")
     return model,vectorizer,unique_answers
-# función predict_answer
+
+def load_model():
+    """
+    Carga el modelo, el vectorizado y las respuestas si existe.
+    """
+    if(
+        os.path.exists(MODEL_PATH)
+        and os.path.exists(VECTORIZER_PATH)
+        and os.path.exists(ANSWERS_PATH)
+    ):
+        with open(MODEL_PATH,"rb") as f:
+            model = pickle.load(f)
+        with open(VECTORIZER_PATH,"rb") as f:
+            vectorizer=pickle.load(f)
+        with open (ANSWERS_PATH,"rb") as f:
+            unique_answers= pickle.load(f)
+        print("📂 Modelo cargado desde disco.")
+        return model,vectorizer,unique_answers
+    else:
+        print("⚠️ No hay modelo guardado, será necesario entrenarlo")
+        return None,None,None
+                  
 def predict_answer(model,vectorizer,unique_answers,user_text):
     # convertimos el texto a números
     x = vectorizer.transform([user_text])
     # el modelo predice la etiqueta de la respuesta correcta
     label = model.predict(x)[0]
     return unique_answers[label]
-# Programa principal
-if __name__ == "__main__":
-    training_data =[
-    ("hola", "¡Hola! ¿En qué podemos ayudarte hoy?"),
-    ("buenos días", "Buenos días, gracias por contactarnos. ¿Cómo podemos asistirte?"),
-    ("buenas tardes", "Buenas tardes, es un gusto atenderte. ¿Qué consulta tienes?"),
-    ("buenas noches", "Buenas noches, estamos a tu disposición. ¿En qué podemos ayudarte?"),
-    ("información", "Con gusto te brindamos la información que necesitas. ¿Sobre qué tema?"),
-    ("soporte", "Nuestro equipo de soporte está listo para ayudarte. Cuéntanos tu inconveniente."),
-    ("precio", "Con gusto te compartimos nuestros precios. ¿Qué servicio te interesa?"),
-    ("gracias", "Gracias a ti por comunicarte con nosotros. ¡Que tengas un excelente día!")
-
-    ]
-    #Entrenar el modelo con la lista
-    model,vectorizer,unique_answers=build_and_train_model(training_data)
-    #Mostrar un mensaje inicial al usuario
-    print("Chatbot supervisado listo,Escribe Salir para terminar.\n")
-    while True:
-        #Pedimos una frase al usuario
-        user =input("Tú: ").strip()
-        if user.lower() in {"salir","exit","quit"}:
-            print("Bot: !Hasta pronto¡")
-            break
-        response=predict_answer(model,vectorizer,unique_answers,user)
-        print("Bot: ",response)
+ 
