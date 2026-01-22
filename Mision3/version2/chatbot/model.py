@@ -33,11 +33,11 @@ def build_and_train_model(train_pairs):
     #crear carpeta para guardar el model si no existe
     os.makedirs(MODEL_DIR,exist_ok=True)
     #Guardar los objetos entrenados
-    with open(MODEL_DIR,"wb") as f:
+    with open(MODEL_PATH,"wb") as f:
         pickle.dump(model,f)
-    with open(MODEL_DIR,"wb") as f:
+    with open(VECTORIZER_PATH,"wb") as f:
         pickle.dump(vectorizer, f)
-    with open(MODEL_DIR,"wb")as f:
+    with open(ANSWERS_PATH,"wb")as f:
         pickle.dump(unique_answers,f)
     print("🆗 Modelo entrebado y guardado correctamente")
     return model,vectorizer,unique_answers
